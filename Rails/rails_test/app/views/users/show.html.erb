@@ -1,0 +1,82 @@
+<div>
+    <a href="/shoes">Go To All Products</a>
+    <a href="/sessions" data-method="delete">Logout</a>
+</div>
+<h4>Hello, <%= @user.first_name %></h4>
+<p>Add a Shoe to sell </p>
+<div>
+    <form action="/shoes" method="post">
+        <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+        <table>
+            <tr>
+                <td><label for="Name">Name:</label></td>
+                <td><input type="text" name="shoe[name]" id="Name"></td>
+            </tr>
+            <tr>
+                <td><label for="Date">Price:</label></td>
+                <td><input type="integer" name="shoe[price]" id="Price" value="0.00"></td>
+            </tr>
+        </table>
+        <button type="submit">Add Shoe</button>
+    </form>
+</div>
+<p>Your shoes not yet sold:</p>
+<table>
+    <thead>
+        <th>Shoe Name</th>
+        <th>Date Posted</th>
+        <th>Amount</th>
+        <th>Action</th>
+    </thead>
+    <% for shoe in @user.shoes %>
+        <% if shoe.purchases.empty? %>
+            <tr>
+                <td><%= shoe.name %></td>
+                <td><%= shoe.created_at.strftime("%B %d, %Y")  %></td>
+                <td>$<%= shoe.price %></td>
+                <% if shoe.user != @user %>
+                    <td><a href="/shoes/<%= shoe.id %>" data-method="post">Buy</a></td>
+                <% end %>
+                <% if shoe.user == @user %>
+                    <td><a href="/shoes/<%= shoe.id %>" data-method="delete">Remove</a></td>
+                <% end %>
+            </tr> 
+        <% end %>
+    <% end %>
+</table>
+<p>Sales:</p>
+<table>
+    <thead>
+        <th>Shoe Name</th>
+        <th>Date Bought</th>
+        <th>Buyer</th>
+        <th>Amount</th>
+    </thead>
+    <% for shoe in @purchases %>
+        <% if User.find(Shoe.find(shoe.shoe_id).user_id) == @user %>
+        <tr>
+            <td><%= Shoe.find(shoe.shoe_id).name %></td>
+            <td><%= Shoe.find(shoe.shoe_id).updated_at.strftime("%B %d, %Y")  %></td>
+            <td><%= User.find(shoe.user_id).first_name %> <%= User.find(shoe.user_id).last_name %></td>
+            <td>$<%= Shoe.find(shoe.shoe_id).price %></td>
+        </tr>
+        <% end %>
+    <% end %>
+</table>
+<p>Purchases:</p>
+<table>
+    <thead>
+        <th>Shoe Name</th>
+        <th>Date Bought</th>
+        <th>Seller</th>
+        <th>Amount</th>
+    </thead>
+    <% for purchase in @user.purchases %>
+        <tr>
+            <td><%= Shoe.find(purchase.shoe_id).name %></td>
+            <td><%= Shoe.find(purchase.shoe_id).updated_at.strftime("%B %d, %Y")  %></td>
+            <td><%= Shoe.find(purchase.shoe_id).user.first_name %> <%= Shoe.find(purchase.shoe_id).user.last_name %></td>
+            <td>$<%= Shoe.find(purchase.shoe_id).price %></td>
+        </tr>
+    <% end %>
+</table>

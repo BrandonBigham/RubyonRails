@@ -1,0 +1,22 @@
+<table class="table">
+        <tr>
+        <td>Name:</td>
+        <td><%= @result['name'] %></td>
+        </tr>
+        <tr>
+        <td>Dojo Location:</td>
+        <td><%= @result['location'] %></td>
+        </tr>
+        <tr>
+        <td>Favorite Language:</td>
+        <td><%= @result['language'] %></td>
+        </tr>
+        <tr>
+        <td>Comment:</td>
+        <td><%= @result['comment'] %></td>
+        </tr>
+    </table>
+    <a href="/"><button>Go Back</button></a>
+<% if flash[:success] %>
+    <p><%= flash[:success] %></p>
+<% end %>
